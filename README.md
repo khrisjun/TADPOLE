@@ -85,28 +85,45 @@ in the Azure Bot resource (append `/api/messages`).
 
 ### Snowflake
 
-Set `DATA_SOURCE=snowflake` (or leave blank for auto-detect) and populate:
+The bot connects to the RS Group Snowflake environment.  Set `DATA_SOURCE=snowflake`
+(or leave blank for auto-detect) and add your RS Group email as `SNOWFLAKE_USER`:
 
 ```dotenv
-SNOWFLAKE_ACCOUNT=myorg-myaccount
-SNOWFLAKE_USER=botuser
-SNOWFLAKE_PASSWORD=s3cr3t
-SNOWFLAKE_DATABASE=MY_DB
-SNOWFLAKE_SCHEMA=PUBLIC
-SNOWFLAKE_WAREHOUSE=COMPUTE_WH
-SNOWFLAKE_TABLE=TAID_RS_MAPPING
-SNOWFLAKE_TAID_COLUMN=TAID
-SNOWFLAKE_RS_COLUMN=RS_CODE
+SNOWFLAKE_ACCOUNT=tf78969.eu-west-1
+SNOWFLAKE_USER=firstname.surname@rsgroup.com
+SNOWFLAKE_DATABASE=ORGDATACLOUD$INTERNAL$BLUE_YONDER
+SNOWFLAKE_SCHEMA=BLUE_YONDER
+SNOWFLAKE_WAREHOUSE=LAB_10_COMPUTE_DEFAULT_VWH
+SNOWFLAKE_ROLE=LAB10_FULL_ROLE
+SNOWFLAKE_AUTHENTICATOR=externalbrowser
+SNOWFLAKE_CLIENT_STORE_TEMP_CREDENTIAL=true
+SNOWFLAKE_TABLE=BY_DMDUNIT
+SNOWFLAKE_TAID_COLUMN=DMDUNIT
+SNOWFLAKE_RS_COLUMN=U_RS_PRODUCT_CODE
 ```
 
-Expected table schema:
+The query the bot executes:
 
 ```sql
-CREATE TABLE TAID_RS_MAPPING (
-    TAID    VARCHAR NOT NULL,
-    RS_CODE VARCHAR NOT NULL
-);
+SELECT "U_RS_PRODUCT_CODE"
+FROM   "ORGDATACLOUD$INTERNAL$BLUE_YONDER"."BLUE_YONDER"."BY_DMDUNIT"
+WHERE  "DMDUNIT" = %s
+LIMIT  1
 ```
+
+#### Authentication – externalbrowser (SSO)
+
+With `SNOWFLAKE_AUTHENTICATOR=externalbrowser` (the default):
+
+1. **First run** – the Snowflake connector opens a browser window for SSO login.
+2. The credential is cached locally (`client_store_temporary_credential=true`).
+3. **Subsequent runs** reuse the cached token – no browser needed.
+
+> **Note for server / Teams deployment:** the operator must run the bot once
+> interactively (e.g. locally or via `python app.py`) to complete the browser
+> sign-in and cache the token before deploying unattended.  Alternatively, set
+> `SNOWFLAKE_AUTHENTICATOR=snowflake` and supply `SNOWFLAKE_PASSWORD` for
+> username/password auth.
 
 ### Oracle (TLS 1.2)
 

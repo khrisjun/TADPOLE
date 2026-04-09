@@ -25,15 +25,31 @@ class DefaultConfig:
     DATA_SOURCE: str = os.environ.get("DATA_SOURCE", "")
 
     # ── Snowflake ─────────────────────────────────────────────────────────────
-    SNOWFLAKE_ACCOUNT: str = os.environ.get("SNOWFLAKE_ACCOUNT", "")
+    SNOWFLAKE_ACCOUNT: str = os.environ.get("SNOWFLAKE_ACCOUNT", "tf78969.eu-west-1")
     SNOWFLAKE_USER: str = os.environ.get("SNOWFLAKE_USER", "")
     SNOWFLAKE_PASSWORD: str = os.environ.get("SNOWFLAKE_PASSWORD", "")
-    SNOWFLAKE_DATABASE: str = os.environ.get("SNOWFLAKE_DATABASE", "")
-    SNOWFLAKE_SCHEMA: str = os.environ.get("SNOWFLAKE_SCHEMA", "PUBLIC")
-    SNOWFLAKE_WAREHOUSE: str = os.environ.get("SNOWFLAKE_WAREHOUSE", "")
-    SNOWFLAKE_TABLE: str = os.environ.get("SNOWFLAKE_TABLE", "TAID_RS_MAPPING")
-    SNOWFLAKE_TAID_COLUMN: str = os.environ.get("SNOWFLAKE_TAID_COLUMN", "TAID")
-    SNOWFLAKE_RS_COLUMN: str = os.environ.get("SNOWFLAKE_RS_COLUMN", "RS_CODE")
+    SNOWFLAKE_DATABASE: str = os.environ.get(
+        "SNOWFLAKE_DATABASE", "ORGDATACLOUD$INTERNAL$BLUE_YONDER"
+    )
+    SNOWFLAKE_SCHEMA: str = os.environ.get("SNOWFLAKE_SCHEMA", "BLUE_YONDER")
+    SNOWFLAKE_WAREHOUSE: str = os.environ.get(
+        "SNOWFLAKE_WAREHOUSE", "LAB_10_COMPUTE_DEFAULT_VWH"
+    )
+    SNOWFLAKE_ROLE: str = os.environ.get("SNOWFLAKE_ROLE", "LAB10_FULL_ROLE")
+    # "externalbrowser" triggers SSO sign-in on first use and caches the token.
+    # Use "snowflake" for username/password auth (requires SNOWFLAKE_PASSWORD).
+    SNOWFLAKE_AUTHENTICATOR: str = os.environ.get(
+        "SNOWFLAKE_AUTHENTICATOR", "externalbrowser"
+    )
+    # Cache the browser auth token so the bot process does not need to
+    # re-open a browser on every request.
+    SNOWFLAKE_CLIENT_STORE_TEMP_CREDENTIAL: bool = (
+        os.environ.get("SNOWFLAKE_CLIENT_STORE_TEMP_CREDENTIAL", "true").lower()
+        not in ("false", "0", "no")
+    )
+    SNOWFLAKE_TABLE: str = os.environ.get("SNOWFLAKE_TABLE", "BY_DMDUNIT")
+    SNOWFLAKE_TAID_COLUMN: str = os.environ.get("SNOWFLAKE_TAID_COLUMN", "DMDUNIT")
+    SNOWFLAKE_RS_COLUMN: str = os.environ.get("SNOWFLAKE_RS_COLUMN", "U_RS_PRODUCT_CODE")
 
     # ── Oracle (over TLS 1.2) ─────────────────────────────────────────────────
     ORACLE_DSN: str = os.environ.get("ORACLE_DSN", "")          # e.g. host:port/service
@@ -50,5 +66,5 @@ class DefaultConfig:
         "CSV_PATH",
         os.path.join(os.path.dirname(__file__), "data", "sample_taid_rs_codes.csv"),
     )
-    CSV_TAID_COLUMN: str = os.environ.get("CSV_TAID_COLUMN", "TAID")
-    CSV_RS_COLUMN: str = os.environ.get("CSV_RS_COLUMN", "RS_CODE")
+    CSV_TAID_COLUMN: str = os.environ.get("CSV_TAID_COLUMN", "DMDUNIT")
+    CSV_RS_COLUMN: str = os.environ.get("CSV_RS_COLUMN", "U_RS_PRODUCT_CODE")
