@@ -1,0 +1,20 @@
+# Core web framework
+aiohttp==3.13.3
+
+# Microsoft Bot Framework SDK
+botbuilder-core==4.15.0
+botbuilder-schema==4.15.0
+botbuilder-integration-aiohttp==4.15.0
+
+# Data connectors (optional – install only what you need)
+# Snowflake
+snowflake-connector-python==3.13.1
+
+# Oracle (thin-mode, no Oracle Client required)
+oracledb==2.3.0
+
+# CSV / data utilities
+pandas==2.2.2
+
+# Environment variable loading
+python-dotenv==1.0.1
